@@ -14,7 +14,7 @@ const renderGoodsItem = (title="item", price="150", img="img/item.png") => {
             </div>`
 };
 
-const renderGoodsList = (list) => {
+const renderGoodsList = list => {
     let goodsList = list.map(item => renderGoodsItem(item.title, item.price));
     for (let i=0;i<list.length;i++){
         document.querySelector('.goods-list').innerHTML += goodsList[i];
