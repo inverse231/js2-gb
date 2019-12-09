@@ -69,22 +69,6 @@ class GoodsList {
     }
 }
 
-class Chat {
-
-}
-
-class ChatMessage {
-    constructor(text, time) {
-        this.text = text;
-        this.time = time;
-    }
-    sendMessage(){
-        return '<div><span class="sent-message"></span></div>'
-    }
-}
-
-
-
 const list = new GoodsList();
 list.fetchGoods();
 list.render();
