@@ -1,12 +1,70 @@
-.chat-window {
+.chat-wrap {
+    display: flex;
     position: fixed;
-    top: 35%;
-    left: 50px;
-    width: 300px;
-    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);*/
-    height: 400px;
+    bottom: 7%;
+    right: 7%;
     z-index: 10;
     box-sizing: border-box;
+    border-radius: 8px 35px 0 0;
+}
+
+.chat-band {
+    background: #211e1d;
+    color: white;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 8px 25px 5px 5px;
+}
+
+.chat-band__title {
+    text-align: center;
+    user-select: none;
+    margin: 0 10px 0 0;
+    padding-top: 7px;
+}
+
+.chat-cross {
+    margin-right: 15px;
+    z-index: 10;
+    align-self: flex-end;
+    display: none;
+}
+
+.chat-band__icon {
+    fill: green;
+    animation-duration: 0.5s;
+    animation-name: scalechange;
+    animation-iteration-count: infinite;
+}
+
+@keyframes scalechange {
+    from {
+        transform: scale(1.0);
+    }
+
+    to {
+        transform: scale(1.5);
+    }
+}
+
+.chat-cross:hover {
+    fill: green;
+}
+
+.chat-cross:active {
+    fill: #211e1d;
+}
+
+.chat-window {
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+    width: 300px;
+    height: 400px;
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);*/
 }
 
 .top-line {
@@ -15,7 +73,21 @@
     background: #211e1d;
     display: flex;
     border-radius: 8px 35px 0 0;
+    overflow: hidden;
 }
+
+.top-line::before {
+    position: absolute;
+    content: '';
+    display: block;
+    border: 30px transparent solid;
+    border-radius: 50%;
+    border-left: 30px solid lightgreen;
+    right: -30px;
+    top: -30px;
+    transform: rotate(-45deg);
+}
+
 .user-icon {
     position: absolute;
     background: #c0c0c0;
@@ -23,6 +95,7 @@
     top: 15px;
     left: 15px;
 }
+
 .text-container {
     position: absolute;
     top: 17px;
@@ -32,14 +105,19 @@
     justify-content: flex-start;
     color: #fff;
 }
+
 .main-chat-window {
     height: 250px;
+    overflow: auto;
+    background-color: #fff;
 }
+
 .message-container {
     height: 75px;
     background: #c0c0c0;
     position: relative;
 }
+
 .message-box {
     resize: none;
     position: absolute;
@@ -47,4 +125,30 @@
     border-radius: 3px;
     top: 10px;
     left: 10px;
+}
+
+.new-sent-message {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.sent-message {
+    width: 50%;
+    height: 50px;
+    border-radius: 10px;
+    background: lightgreen;
+    padding: 5px 0 0 9px;
+    margin: 0 0 5px 10px;
+    position: relative;
+}
+
+.sent-message::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 15px;
+    left: -23px;
+    border: 15px transparent solid;
+    border-right: 15px lightgreen solid;
 }
