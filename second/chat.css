@@ -34,7 +34,7 @@
 }
 
 .chat-band__icon {
-    fill: green;
+    fill: lightgreen;
     animation-duration: 0.5s;
     animation-name: scalechange;
     animation-iteration-count: infinite;
@@ -51,7 +51,7 @@
 }
 
 .chat-cross:hover {
-    fill: green;
+    fill: lightgreen;
 }
 
 .chat-cross:active {
@@ -121,7 +121,7 @@
 .message-box {
     resize: none;
     position: absolute;
-    border: 1px solid green;
+    border: 1px solid lightgreen;
     border-radius: 3px;
     top: 10px;
     left: 7px;
@@ -151,7 +151,7 @@
     top: 15px;
     left: -23px;
     border: 15px transparent solid;
-    border-right: 15px lightgreen solid;
+    border-right: 15px lightlightgreen solid;
 }
 
 .chat-buttons {
@@ -172,4 +172,24 @@
     padding: 0;
     margin: 0;
     background: transparent;
+}
+
+.smile-icon:hover,
+.attach-icon:hover {
+    fill: lightgreen;
+}
+
+.smile-button:hover .smile-icon .cls-2 {
+    fill: lightgreen;
+    stroke: lightgreen;
+}
+
+.smile-button:hover .smile-icon .cls-3 {
+    fill: lightgreen;
+    stroke: lightgreen;
+}
+
+.smile-button:hover .smile-icon .cls-1 {
+
+    stroke: lightgreen;
 }
