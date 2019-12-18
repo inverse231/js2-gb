@@ -7,17 +7,18 @@ function makeGETRequest(url) {
         } else {
             xhr = new window.ActiveXObject('Microsoft.XMLHTTP');
         }
-
-
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                const body = JSON.parse(xhr.responseText);
-                resolve(body);
-            } else if(xhr.readyState === 4 && xhr.status !== 200){
-              reject(() => {
-                  console.error(xhr.status);
-              });
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    const body = JSON.parse(xhr.responseText);
+                    resolve(body);
+                } else {
+                    reject(xhr.responseText);
+                }
             }
+        };
+        xhr.onerror = function (error) {
+            reject(err);
         };
         xhr.open('GET', url);
         xhr.send();
@@ -26,9 +27,10 @@ function makeGETRequest(url) {
 
 
 class GoodsItem {
-    constructor(product_name = 'Без имени', price = 100) {
+    constructor(product_name = 'Без имени', price = 100, id_product) {
         this.product_name = product_name;
         this.price = price;
+        this.id_product = id_product;
     }
     render() {
         return `<div class="goods-item">
@@ -38,7 +40,6 @@ class GoodsItem {
                 </div>`;
     }
 }
-
 class CartItem {
     constructor(product_name="name", price="100", count=0) {
         this.product_name = product_name;
@@ -47,11 +48,11 @@ class CartItem {
     }
     render() {
         return `<div class="goods-item">
-                    <h3 class="product_name goods-product_name">${this.product_name}</h3>
-                    <p class="goods-price">${this.price}</p>
-                    <span class="goods-count">${this.count}</span>
-                    <button class="goods-inc">+</button>
-                    <button class="goods-dec">-</button>
+                <h3 class="product_name goods-product_name">${this.product_name}</h3>
+                <p class="goods-price">${this.price}</p>
+                 <button class="goods-dec">-</button>
+                <span class="goods-count">${this.count}</span>
+                <button class="goods-inc">+</button>
                 </div>`;
     }
 }
@@ -59,13 +60,34 @@ class CartItem {
 class Cart {
     constructor() {
         this.items = [];
+        this.idItems = [];
         this.element = document.querySelector('.cart');
     }
+
     addCartItem(name, price) {
         let newItem = new CartItem(name, price);
         this.items += newItem;
         newItem.count++;
         this.element.innerHTML += newItem.render();
+        /*   this.products = id;
+           let buttonAdd = document.querySelectorAll('.goods-button');
+           let title = document.querySelectorAll('.goods-title');
+           let price = document.querySelectorAll('.goods-price');
+           buttonAdd.forEach(function (item, i) {
+               item.addEventListener('click', function () {
+                   if (cart.idItems.includes(this.products[i], 0)) {
+                       let count = document.querySelectorAll('.goods-count');
+                       let currentCount = parseInt(count[i].textContent);
+                       count[i].innerHTML = ++currentCount;
+
+                   } else {
+                       let itemName = title[i];
+                       let itemPrice = price[i];
+                       cart.addCartItem(itemName.textContent, itemPrice.textContent);
+                       cart.idItems.push(pr[i]);
+                   }
+               });
+           });*/
     }
     incCartItem(item) {
         let count;
@@ -73,7 +95,7 @@ class Cart {
             if(arrItem === item) {
                 count = arrItem.count++;
             }
-        })
+        });
         return count;
     }
     decCartItem(item) {
@@ -95,26 +117,22 @@ class Cart {
 class GoodsList {
     constructor() {
         this.goods = [];
+        this.products = [];
     }
-    async fetchGoods() {
-        let a = await makeGETRequest(`${API_URL}/catalogData.json`);
-        return new Promise((resolve, reject) => {
-            resolve(a);
-            reject("err => console.error(err)");
-        })
-            .then(res => {
-                this.goods = res;
-                this.render();
-            })
-            .catch(err => console.error(err))
+    fetchGoods() {
+        return makeGETRequest(`${API_URL}/catalogData.json`).then((goods) => {
+            this.goods = goods;
+        });
     }
     render() {
         let listHtml = '';
         this.goods.forEach(good => {
-            const goodItem = new GoodsItem(good.product_name, good.price);
+            const goodItem = new GoodsItem(good.product_name, good.price, good.id_product);
             listHtml += goodItem.render();
+            this.products.push(good.id_product);
         });
         document.querySelector('.goods-list').innerHTML = listHtml;
+        add(this.products);
     }
     countSum() {
         let sum = 0;
@@ -123,37 +141,56 @@ class GoodsList {
         });
         return sum;
     }
+    getProducts() {
+        return this.products;
+    }
 }
 
-const cart = new Cart();
+function add(pr) {
+    let buttonAdd = document.querySelectorAll('.goods-button');
+    let title = document.querySelectorAll('.goods-title');
+    let price = document.querySelectorAll('.goods-price');
+    let idArr = [];
+    buttonAdd.forEach(function (item, i) {
+        item.addEventListener('click', function () {
+            if (idArr.includes(pr[i], 0)) {
+                let count = document.querySelectorAll('.goods-count');
+                let currentCount = parseInt(count[i].textContent);
+                count[i].innerHTML = ++currentCount;
+            } else {
+                let itemName = title[i];
+                let itemPrice = price[i];
+                cart.addCartItem(itemName.textContent, itemPrice.textContent);
+                idArr.push(pr[i]);
+            }
+        });
+    });
+}
 const list = new GoodsList();
-list.fetchGoods()
-    .then(() => console.log(list.countSum()))
-    .catch((err) => console.error(err));
+const cart = new Cart();
+
+
+
+// function countIncr() {
+//     let currentCount = 1;
+//     return function() {
+//         return currentCount++;
+//     };
+// }
+// let getCount = countIncr();
+// console.log(getCount());
+// count[i].innerHTML = countIncr()();
+// buttonInc.forEach(function (button, i) {
+//     button.addEventListener('click', function () {
+//         console.log(count[i].textContent);
+//         count[i].innerHTML += 1;
+//     });
+// });
+list.fetchGoods().then(() => {
+    list.render();
+});
+
 
 
 //тяжелые попытки добавить элемент в корзину
-setTimeout(function () {
-    let buttonAdd = document.querySelectorAll('.goods-button');
-    let buttonInc = document.querySelectorAll('.goods-inc');
-    let buttonDec = document.querySelectorAll('.goods-dec');
-    console.log(buttonDec);
-    let title = document.querySelectorAll('.goods-title');
-    let price = document.querySelectorAll('.goods-price');
-    let count = document.querySelectorAll('.goods-count');
-    buttonAdd.forEach(function(item, i) {
-        item.addEventListener('click', function () {
-            let itemName = title[i];
-            let itemPrice = price[i];
-            cart.addCartItem(itemName.textContent, itemPrice.textContent);
-        });
-    buttonInc.forEach(function (item, i) {
-       item.addEventListener('click', function () {
-           count[i].innerHTML += 1;
-       });
-    });
-})
-
-}, 1000);
-
 
