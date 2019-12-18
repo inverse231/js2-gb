@@ -160,37 +160,43 @@ function add(pr) {
             } else {
                 let itemName = title[i];
                 let itemPrice = price[i];
+                idArr[i] = pr[i];
                 cart.addCartItem(itemName.textContent, itemPrice.textContent);
-                idArr.push(pr[i]);
+                console.log(idArr);
+                let buttonInc = document.querySelectorAll('.goods-inc');
+                buttonInc.forEach(function (button, i) {
+                    button.addEventListener('click', function () {
+                        let count = document.querySelectorAll('.goods-count');
+                        let currentCount = parseInt(count[i].textContent);
+                        count[i].innerHTML = ++currentCount;
+                    });
+                });
+                buttonDec = document.querySelectorAll('.goods-dec');
+                buttonDec.forEach(function (button, i) {
+                    button.addEventListener('click', function () {
+                        let count = document.querySelectorAll('.goods-count');
+                        let currentCount = parseInt(count[i].textContent);
+                        if (currentCount === 1 || currentCount < 1) {
+                            let cart = document.querySelectorAll('.goods-item');
+                            cart[i].remove();
+                            let index = idArr.indexOf(pr[i]);
+                            if (index > -1) {
+                                delete idArr[index];
+                            }
+                        } else {
+                            count[i].innerHTML = --currentCount;
+                        }
+                    });
+                });
             }
         });
     });
+
 }
 const list = new GoodsList();
 const cart = new Cart();
-
-
-
-// function countIncr() {
-//     let currentCount = 1;
-//     return function() {
-//         return currentCount++;
-//     };
-// }
-// let getCount = countIncr();
-// console.log(getCount());
-// count[i].innerHTML = countIncr()();
-// buttonInc.forEach(function (button, i) {
-//     button.addEventListener('click', function () {
-//         console.log(count[i].textContent);
-//         count[i].innerHTML += 1;
-//     });
-// });
 list.fetchGoods().then(() => {
     list.render();
 });
 
-
-
-//тяжелые попытки добавить элемент в корзину
 
