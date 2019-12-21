@@ -38,17 +38,18 @@ class FormValidator {
             this.validate(element);
         });
 
-        const invalidInputs = [... this.form.querySelectorAll('.invalid')];
-        if(invalidInputs.length) {
+        const invalidInputs = [...this.form.querySelectorAll('.invalid')];
+        if (invalidInputs.length) {
             this.valid = true;
         }
     }
 
     validate(field) {
         if (this.patterns[field.name]) {
-            if(!this.patterns[field.name].test(field.value)){
+            if (!this.patterns[field.name].test(field.value)) {
                 field.classList.add('invalid');
-                this.addErrorMessage(field);
+                if (field.parentNode.contains)
+                    this.addErrorMessage(field);
                 this.watch(field);
             }
         }
@@ -59,23 +60,30 @@ class FormValidator {
         field.parentNode.insertAdjacentHTML('beforeend', errorStr);
     }
 
-    watch(field){
+    watch(field) {
         field.addEventListener('input', () => {
             const error = field.parentNode.querySelector('.error-msg');
-            if(this.patterns[field.name].test(field.value)) {
+            if (this.patterns[field.name].test(field.value)) {
                 field.classList.remove('invalid');
                 field.classList.add('valid');
-                if(error) {
+                if (error) {
                     error.remove();
 
                 }
             } else {
                 field.classList.remove('valid');
                 field.classList.add('invalid');
-                if(!error){
+                if (!error) {
                     this.addErrorMessage(field);
                 }
             }
         });
     };
 }
+
+const form = document.querySelector('.input-form');
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    new FormValidator(form);
+});
