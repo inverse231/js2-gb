@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Regex</title>
+    <style>
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        .input-container {
+            display: flex;
+            justify-content: space-around;
+        }
+        .input-container label {
+            padding-right: 10px;
+        }
+
+        .invalid {
+            display: block;
+            color: red;
+        }
+
+    </style>
+</head>
+<body>
+    <p class="text">Lorem ipsu'm dolor sit amet, 'consectetur adipisicing elit'. 'Ad adipisci autem culpa' cum dolorem ex illo inventore, maxime quis quo repellendus, 'repudiandae sed ullam' unde ut velit vitae! Ab, adipisci.</p>
+    <button class="filter-quotes">filter</button>
+    <form class="input-form" action="#">
+        <div class="input-container">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" >
+        </div>
+        <div class="input-container">
+            <label for="phone">Phone</label>
+            <input type="text" id="phone" name="phone">
+        </div>
+        <div class="input-container">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
+        </div>
+        <button type="submit" class="submit">Submit</button>
+    </form>
+
+
+    <script src="index.js"></script>
+    <script>
+        const form = document.querySelector('.input-form');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            new FormValidator(form);
+        })
+    </script>
+</body>
+</html>

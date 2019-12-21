@@ -180,6 +180,7 @@ function add(pr) {
                             let cart = document.querySelectorAll('.goods-item');
                             cart[i].remove();
                             let index = idArr.indexOf(pr[i]);
+                            console.log(idArr);
                             if (index > -1) {
                                 delete idArr[index];
                             }
