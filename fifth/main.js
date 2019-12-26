@@ -7,7 +7,8 @@ const app = new Vue({
     filteredGoods: [],
     itemsFiltered: [],
     searchLine: '',
-    isVisibleCart: ''
+    visibility: false,
+    itemCart: {amount: 0, countItems: 0, products: []}
   },
   computed: {
     listItems() {
@@ -15,7 +16,7 @@ const app = new Vue({
         return this.itemsFiltered;
     }
       return this.filteredGoods;
-    }
+    },
   },
   methods: {
     filters() {
@@ -24,6 +25,33 @@ const app = new Vue({
         return good.product_name.toLowerCase().includes(this.searchLine);
       });
     },
+    showCart() {
+        this.visibility = !this.visibility;
+    },
+    addProduct (good) {
+      let findProduct = this.itemCart.products.find(item => item.id_product === good.id_product);
+      if (!findProduct) {
+        this.itemCart.products.push(Object.assign ({}, good, {count: 1}));
+        good.count = 1;
+        this.visibility = true;
+      } else {
+        findProduct.count++;
+      }
+    },
+    decCount (good) {
+      if (good.count === 1) {
+        this.itemCart.products.splice(this.itemCart.products.indexOf(good), 1);
+        if(this.itemCart.products.length === 0) {
+          this.visibility = !this.visibility;
+        }
+      } else{
+        good.count--;
+      }
+    },
+    incCount (good) {
+      good.count++;
+    },
+
   makeGETRequest(url) {
       return new Promise((resolve, reject) => {
         let xhr;
@@ -60,7 +88,4 @@ const app = new Vue({
         console.error(e);
       }
     },
-    searchGood(name) {
-
-    }
   });
