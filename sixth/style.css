@@ -1,0 +1,106 @@
+.header {
+    padding: 10px 20px;
+    border-bottom: 1px solid #c0c0c0;
+    margin-bottom: 40px;
+}
+.container {
+    max-width: 1280px;
+    padding: 0 20px;
+    display: flex;
+    margin: 0 auto;
+    position: relative;
+}
+.search-button {
+    border-radius: 4px;
+}
+.cart-button {
+    -webkit-appearance: none;
+    border: none;
+    background-color: #46a5fc;
+    color: #fff;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin-left: auto;
+    margin-bottom: 10px;
+    z-index: 5;
+}
+.empty {
+    border-radius: 5px;
+    background: lightblue;
+    padding: 7px;
+    box-sizing: border-box;
+    position: relative;
+}
+.empty:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -25px;
+    right: 20px;
+    border: 15px solid transparent;
+    border-bottom: 15px solid lightblue;
+
+}
+.goods-list {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+.goods-item {
+    padding: 20px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    width: calc(100% / 5 - 60px);
+    background-color: #f1f1f1;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.title {
+    font-size: 18px;
+    font-weight: bold;
+}
+.goods-title {
+    margin-bottom: 20px;
+}
+.goods-button {
+    border-radius: 4px;
+}
+.good_title, .good_price {
+    margin: 0 0 7px 0;
+}
+.cart-block {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    right: 20px;
+    justify-content: center;
+}
+.cart {
+    position: relative;
+    top: 50px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid #46a5fc;
+    border-radius: 5px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.cart-item {
+    width: 150px;
+    background: lightblue;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin: 0 0 10px 0;
+}
+.goods-dec, .goods-inc {
+    border-radius: 30%;
+    border-color: #46a5fc;
+}
