@@ -1,0 +1,14 @@
+{
+  "name": "seventh",
+  "version": "1.0.0",
+  "description": "lesson 7 code",
+  "main": "main.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
