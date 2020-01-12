@@ -2,10 +2,11 @@ let productCart = [];
 
 Vue.component('search', {
     data: () => ({ searchLine: '' }),
-    template: `<form class="search-form" v-on:submit.prevent="">
+    template: 
+    `<form class="search-form" v-on:submit.prevent="">
         <input type="text" class="search-input" v-model="searchLine">
         <button class="search-button" @click="filterGoods">Искать</button>
-      </form>`,
+    </form>`,
     methods: {
         filterGoods() {
             this.$emit('filter-goods', this.searchLine);
@@ -16,11 +17,11 @@ Vue.component('search', {
 Vue.component('goods-item', {
     props: ['good'],
     template:
-        ` <div class="goods-item">
+    `<div class="goods-item">
       <h3 class="good_title">{{ good.product_name }}</h3>
       <p class="good_price">{{ good.price }}</p>
       <button class="goods-button" @click="addProduct(good)">Купить</button>
-  </div>`
+    </div>`
     ,
     methods: {
         addProduct(good) {
@@ -60,25 +61,16 @@ Vue.component('goods-list', {
         }
     }
 });
-Vue.component('cart', {
-    data: () => {
-        return {
-            productCart: productCart,
-        }
-    },
-    
-    template: `<div class="cart-block">
-        <div class="cart" >
-          <div class="empty" v-if="productCart.length === 0">Ваша корзина пуста. Скорее приступайте к покупкам!</div>
-          <div class="cart-item" v-else v-for="good in productCart" :key="good.product_name">
-            <h3 class="good_title">{{ good.product_name }}</h3>
-            <p class="good_price">{{ good.price }}</p>
-            <button class="goods-dec" @click="decCount(good)">-</button>
-            <span class="goods-count">{{ good.count }}</span>
-            <button class="goods-inc" @click="incCount(good)">+</button>
-          </div>
-        </div>
-      </div>`,
+Vue.component('cart-item', {
+    props:['good'],
+    template: 
+    `<div class="cart-item">
+        <h3 class="good_title">{{ good.product_name }}</h3>
+        <p class="good_price">{{ good.price }}</p>
+        <button class="goods-dec" @click="decCount(good)">-</button>
+        <span class="goods-count">{{ good.count }}</span>
+        <button class="goods-inc" @click="incCount(good)">+</button>
+    </div>`,
     methods: {
         decCount(good) {
             if (good.count === 1) {
@@ -89,11 +81,29 @@ Vue.component('cart', {
             } else {
                 good.count--;
             }
-        }
-        ,
+            this.$emit("decCount", good);
+        },
         incCount(good) {
             good.count++;
+            this.emit("incCount", good);
         },
+    }
+});
+Vue.component('cart', {
+    data: () => {
+        return {
+            productCart: productCart,
+        }
+    },
+    template: 
+    `<div class="cart-block">
+        <div class="cart">
+          <div class="empty" v-if="productCart.length === 0">Ваша корзина пуста. Скорее приступайте к покупкам!</div>
+          <cart-item v-else v-for="good in productCart" :good="good" :key="good.id_product"></cart-item>
+        </div>
+      </div>`,
+    methods: {
+
     }
 });
 const app = new Vue({
@@ -104,7 +114,7 @@ const app = new Vue({
         cartGoods: [],
         productCart: [],
         itemsFiltered: [],
-        visibility: true
+        visibility: false
     },
     methods: {
         showCart() {
@@ -142,8 +152,6 @@ const app = new Vue({
             });
         },
         makePOSTRequest(url, data) {
-            console.log('makePOSTRequest data:');
-            console.log(data);
             return new Promise((resolve, reject) => {
                 let xhr;
                 if (window.XMLHttpRequest) {
@@ -171,16 +179,20 @@ const app = new Vue({
                 this.filteredGoods = this.filteredGoods.filter(good => {
                     return good.product_name.toLowerCase().includes(this.searchLine);
                 });
-
-                console.log(this.filteredGoods);
             } else {
                 return this.filteredGoods = [... this.goods];
             }
         },
         addProduct(good) {
             this.makePOSTRequest('/cart', good);
-            productCart.push(good);
-            console.log(productCart);
+        },
+        incCount(good) {
+            this.makePOSTRequest('/incCount', good);
+            console.log("inc");
+        },
+        decCount(good) {
+            this.makePOSTRequest('/decCount', good);
+            console.log("dec");
         },
         // removeFromCart(good) {
 
@@ -192,12 +204,11 @@ const app = new Vue({
             this.makeGETRequest(`/cart`),
         ]).then(([catalogData, cartData]) => {
             this.goods = catalogData;
-            this.cartGoods = [... cartData];
+            this.cartGoods = [...cartData];
             this.filteredGoods = [...this.goods];
             this.cartGoods.forEach(element => {
                 productCart.push(element);
             });
-            // console.log("@", productCart);
         }).catch((e) => {
             console.error(e);
         });
