@@ -15,7 +15,7 @@
     <div class="container" >
       <search @filter-goods="filters"></search>
       <button class="cart-button" @click="showCart">Корзина</button>
-      <cart ref="cart" @show-cart="showCartHandler" @incCount="" v-show="visibility"></cart>
+      <cart ref="cart" @show-cart="showCartHandler" @inc-count="incCount" @dec-count="decCount" @delete-from-cart="deleteFromCart" v-show="visibility"></cart>
     </div>
   </header>
   <main>

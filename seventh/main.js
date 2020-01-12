@@ -78,14 +78,15 @@ Vue.component('cart-item', {
                 if (productCart.length === 0) {
                     this.visibility = !this.visibility;
                 }
+                this.$emit('delete-item', good);
             } else {
                 good.count--;
+                this.$emit("dec-count", good);
             }
-            this.$emit("decCount", good);
         },
         incCount(good) {
             good.count++;
-            this.emit("incCount", good);
+            this.$emit("inc-count", good);
         },
     }
 });
@@ -99,11 +100,19 @@ Vue.component('cart', {
     `<div class="cart-block">
         <div class="cart">
           <div class="empty" v-if="productCart.length === 0">Ваша корзина пуста. Скорее приступайте к покупкам!</div>
-          <cart-item v-else v-for="good in productCart" :good="good" :key="good.id_product"></cart-item>
+          <cart-item v-else v-for="(good, index) in productCart" :good="good" :key="good.id_product" @inc-count="incCount(good)" @dec-count="decCount(good)" @delete-item="deleteItem(index)"></cart-item>
         </div>
       </div>`,
     methods: {
-
+        incCount(good) {
+            this.$emit('inc-count', good);
+        },
+        decCount(good) {
+            this.$emit('dec-count', good);
+        },
+        deleteItem(index) {
+            this.$emit('delete-from-cart', index);
+        },
     }
 });
 const app = new Vue({
@@ -151,6 +160,33 @@ const app = new Vue({
                 xhr.send();
             });
         },
+        makeDELETERequest(url) {
+            return new Promise((resolve, reject) => {
+                let xhr;
+                if (window.XMLHttpRequest) {
+                    xhr = new window.XMLHttpRequest();
+                } else {
+                    xhr = new window.ActiveXObject('Microsoft.XMLHTTP');
+                }
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            const body = JSON.parse(xhr.responseText);
+                            resolve(body)
+                        } else {
+                            reject(xhr.responseText);
+                        }
+                    }
+                };
+                xhr.onerror = function (err) {
+                    reject(err);
+                };
+
+                xhr.open('DELETE', url);
+                xhr.send();
+            });
+        },
         makePOSTRequest(url, data) {
             return new Promise((resolve, reject) => {
                 let xhr;
@@ -194,9 +230,9 @@ const app = new Vue({
             this.makePOSTRequest('/decCount', good);
             console.log("dec");
         },
-        // removeFromCart(good) {
-
-        // }
+        deleteFromCart(index) {
+            this.makeDELETERequest(`cart/${index}`);
+        }
     },
     mounted() {
         Promise.all([
